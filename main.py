@@ -2,25 +2,20 @@ import os
 from dotenv import load_dotenv
 import asyncio
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message
+from app.handlers import router
 
 load_dotenv()
 
 token = os.getenv("TOKEN")
 
-bot = Bot(token=token)
-dp = Dispatcher()
-
-@dp.message()
-async def cmd_start(message: Message):
-    await message.answer('Привет!')
-    await message.reply("Как дела?")
-
 async def main():
+    bot = Bot(token=token)
+    dp = Dispatcher()
+    dp.include_router(router)
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    print("Bot is starting")
+    print("Bot has started")
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
