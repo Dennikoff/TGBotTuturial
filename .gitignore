@@ -5,3 +5,5 @@ venv
 .history
 
 .vsix
+
+.env
