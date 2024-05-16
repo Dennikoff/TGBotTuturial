@@ -21,3 +21,4 @@ async def catalog(message: Message):
 @router.callback_query(F.data == 't-shirt')
 async def t_shirt(callback: CallbackQuery):
     await callback.answer('Вы выбрали категорию футболки')#, show_alert=True)
+    
