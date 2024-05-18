@@ -30,7 +30,7 @@ async def catalog(message: Message):
 async def t_shirt(callback: CallbackQuery):
     await callback.answer('Вы выбрали категорию футболки')#, show_alert=True)
     
-@router.message(Command('rigister'))
+@router.message(Command('register'))
 async def register(message: Message, state: FSMContext):
     await state.set_state(Register.name)
     await message.answer('Введите ваше имя')
@@ -44,6 +44,13 @@ async def register_name(message: Message, state: FSMContext):
 
 @router.message(Register.age)
 async def register_age(message: Message, state: FSMContext):
-    await state.update_data(name=message.text)
+    await state.update_data(age=message.text)
     await state.set_state(Register.number)
-    await message.answer('Отправьте ваш номер телефона')
+    await message.answer('Отправьте ваш номер телефона', reply_markup=kb.get_number)
+
+@router.message(Register.number, F.contact)
+async def register_number(message: Message, state: FSMContext):
+    await state.update_data(number=message.contact.phone_number)
+    data = await state.get_data()
+    await message.answer(f"Ваше имя: {data['name']}\nВаш возраст: {data['age']}\nВаш номер телефона: {data['number']}")
+    await state.clear()
