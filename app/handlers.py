@@ -1,10 +1,18 @@
 from aiogram import F, Router
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, Command
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
 
 import app.keyboards as kb
 
 router = Router()
+
+
+class Register(StatesGroup):
+    name = State()
+    age = State()
+    number = State()
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
@@ -22,3 +30,20 @@ async def catalog(message: Message):
 async def t_shirt(callback: CallbackQuery):
     await callback.answer('Вы выбрали категорию футболки')#, show_alert=True)
     
+@router.message(Command('rigister'))
+async def register(message: Message, state: FSMContext):
+    await state.set_state(Register.name)
+    await message.answer('Введите ваше имя')
+
+@router.message(Register.name)
+async def register_name(message: Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    await state.set_state(Register.age)
+    await message.answer('Введите ваш возраст')
+
+
+@router.message(Register.age)
+async def register_age(message: Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    await state.set_state(Register.number)
+    await message.answer('Отправьте ваш номер телефона')
